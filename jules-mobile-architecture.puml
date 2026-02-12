@@ -1,0 +1,91 @@
+@startuml Jules Mobile Architecture
+
+!theme plain
+skinparam actorStyle awesome
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+title Jules Mobile Prototype - System Architecture
+
+actor "User" as user
+rectangle "Mobile App (React Native)" as mobile {
+    component "App.tsx" as app
+    component "AuthContext" as auth
+    component "MainNavigator" as nav
+    component "LoginScreen" as login
+    component "ChatScreen" as chat
+    component "IDEScreen" as ide
+    component "TerminalView" as terminal
+    component "API Service" as api_mobile
+}
+
+rectangle "Backend Server (Node.js)" as backend {
+    component "Express Server" as server
+    component "Socket.io" as socket
+    component "Auth Middleware" as auth_mw
+    component "VM Manager" as vm_manager
+    component "SSH Service" as ssh
+    component "Mock Terminal" as mock
+}
+
+database "Data Store" as store {
+    entity "Users" as users
+    entity "VMs" as vms
+}
+
+rectangle "External Services" as external {
+    component "GitHub OAuth" as github
+    component "SSH Servers" as ssh_servers
+    component "Cloud VM Provider" as cloud
+}
+
+' User interactions
+user --> login : GitHub Login
+user --> chat : Send messages
+user --> ide : Manage VMs
+user --> terminal : Run commands
+
+' Mobile app internal flow
+app --> auth : Provides auth state
+auth --> nav : Controls navigation
+nav --> login : Show if not authenticated
+nav --> chat : Tab navigation
+nav --> ide : Tab navigation
+ide --> terminal : Open terminal
+login --> api_mobile : POST /auth/github
+chat --> api_mobile : (Mock responses)
+ide --> api_mobile : GET/POST VMs
+terminal --> socket : Real-time terminal
+
+' Backend flow
+server --> auth_mw : Authentication
+auth_mw --> github : Mock OAuth
+server --> vm_manager : VM CRUD operations
+vm_manager --> store : Persist data
+socket --> ssh : SSH connections
+ssh --> ssh_servers : Real servers
+ssh --> mock : Mock terminal
+socket --> api_mobile : Terminal I/O
+
+' VM management flow
+ide --> vm_manager : Add/List VMs
+vm_manager --> users : User validation
+vm_manager --> vms : VM operations
+vms --> ssh : Connection details
+ssh --> cloud : Cloud VM provisioning
+
+' Data flow
+store --> users : User data
+store --> vms : VM configurations
+
+' Socket.io real-time communication
+terminal <--> socket : bidirectional terminal I/O
+socket <--> ssh : SSH data relay
+socket <--> mock : Mock terminal responses
+
+note right of mobile : React Native with Expo\nTypeScript, React Navigation
+note right of backend : Node.js, Express\nSocket.io, SSH2 library
+note bottom of store : In-memory data store\n(for prototype)
+note top of external : GitHub OAuth (mocked)\nSSH servers, Cloud VMs
+
+@enduml

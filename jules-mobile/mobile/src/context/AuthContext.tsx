@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useMemo, useCallback } from 'react';
 import { loginWithGitHub } from '../services/api';
 
 export interface User {
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
-  const login = async () => {
+  const login = useCallback(async () => {
     try {
       // In a real app, this would redirect to a browser or use a library
       // Here we just call the mock endpoint
@@ -35,19 +35,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (e) {
       console.error("Login exception", e);
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setToken(null);
     setUser(null);
-  };
+  }, []);
 
-  const updateUser = (newUser: User) => {
+  const updateUser = useCallback((newUser: User) => {
       setUser(newUser);
-  };
+  }, []);
+
+  const value = useMemo(() => ({
+    token,
+    user,
+    login,
+    logout,
+    updateUser
+  }), [token, user, login, logout, updateUser]);
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, updateUser }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

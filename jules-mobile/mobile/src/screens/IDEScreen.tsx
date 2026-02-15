@@ -3,13 +3,14 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Button, Modal, Text
 import { useAuth } from '../context/AuthContext';
 import { getVMs, addVM, upgradePlan, downgradePlan } from '../services/api';
 import TerminalView from '../components/TerminalView';
+import { VM } from '../types';
 
 export default function IDEScreen() {
   const { token, user, updateUser } = useAuth();
-  const [vms, setVms] = useState<any[]>([]);
+  const [vms, setVms] = useState<VM[]>([]);
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [currentVM, setCurrentVM] = useState<any | null>(null);
+  const [currentVM, setCurrentVM] = useState<VM | null>(null);
 
   // Form State
   const [vmName, setVmName] = useState('');

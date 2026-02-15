@@ -1,11 +1,6 @@
 import React, { createContext, useState, useContext } from 'react';
 import { loginWithGitHub } from '../services/api';
-
-export interface User {
-  id: string;
-  username: string;
-  plan: 'free' | 'pro';
-}
+import { User } from '../types';
 
 interface AuthContextType {
   token: string | null;

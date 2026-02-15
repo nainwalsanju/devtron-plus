@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import { CreateVMData, VM } from '../types';
 
 // Adjust this if running on physical device (use your machine's IP)
 const BACKEND_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
@@ -25,14 +26,14 @@ export const getMyProfile = async (token: string) => {
   return response.json();
 };
 
-export const getVMs = async (token: string) => {
+export const getVMs = async (token: string): Promise<VM[]> => {
   const response = await fetch(`${BACKEND_URL}/vms`, {
     headers: { Authorization: token }
   });
   return response.json();
 };
 
-export const addVM = async (token: string, vmData: any) => {
+export const addVM = async (token: string, vmData: CreateVMData): Promise<VM> => {
   const response = await fetch(`${BACKEND_URL}/vms`, {
     method: 'POST',
     headers: {

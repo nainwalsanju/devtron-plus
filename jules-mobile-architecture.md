@@ -3,10 +3,10 @@
 ```mermaid
 graph TB
     %% User Layer
-    User[User] --> Login[LoginScreen]
-    User --> Chat[ChatScreen]
-    User --> IDE[IDEScreen]
-    User --> Terminal[TerminalView]
+    User[User] --> Login[🔐 LoginScreen]
+    User --> Chat[💬 ChatScreen]
+    User --> IDE[💻 IDEScreen]
+    User --> Terminal[🖥️ TerminalView]
 
     %% Mobile App Components
     subgraph Mobile App [React Native/Expo]
